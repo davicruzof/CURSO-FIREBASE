@@ -16,8 +16,8 @@ var NOMES = [
 ];
 /**
  * firebase objeto global
- * database metodo de acesso ao realtimedatase
- * ref url em string para o nome onde vai ser manipulado os dados
+ * database(): metodo de acesso ao realtimedatase
+ * ref('url'): url de manipulação do banco com o parametro do nó
  */
 var ref = firebase.database().ref('card');
 
@@ -30,11 +30,12 @@ function criarCard() {
     age: Math.floor(Math.random() * 22 + 18),
     followers: 0,
   };
+
   /**
    * firebase objeto global
-   * database metodo de acesso ao realtimedatase
-   * ref url em string para o nome onde vai ser manipulado os dados
-   * set metodos de inserir os dados
+   * database(): metodo de acesso ao realtimedatase
+   * ref('url'): url de manipulação do banco com o parametro do nó
+   * set({key: value}): metodos para inserir os dados no banco apartir de uma referencia do nó
    * 
     firebase
       .database()
@@ -47,9 +48,9 @@ function criarCard() {
   */
 
   /**
-   * ref url em string para o nome onde vai ser manipulado os dados
-   * child acesando um no filho passado por parametro
-   
+   * ref('url'): url de manipulação do banco com o parametro do nó
+   * child('key'): acesando um nó através de uma propriedade
+   * set({key: value}): metodos para inserir os dados no banco apartir de uma referencia do nó
    ref
    .child(card.name)
    .set(card)
@@ -59,11 +60,14 @@ function criarCard() {
     */
 
   /**
-   *  push cria um id unico e insere os dados dentro desse id
-   */
-  //   ref.push(card).then((snapshot) => {
-  // adicionaCardATela(card, snapshot.key);
-  //   });
+   * ref('url'): url de manipulação do banco com o parametro do nó
+   * push({key:value}): cria um id único e insere os dados dentro desse id
+   * 
+   ref.push(card).then((snapshot) => {
+     adicionaCardATela(card, snapshot.key);
+    });
+   *
+  */
 
   /**
    * usando fetch para adicionar dados
@@ -84,7 +88,9 @@ function criarCard() {
  */
 function deletar(id) {
   /**
-   *  remove(): excluir o nó do rtdb e seus filhos
+   * child(''): nó filho o qual vai ser manipulado
+   * remove(): excluir o nó do banco como tambem seus filhos
+   * 
    
   ref
     .child(id)
@@ -94,7 +100,8 @@ function deletar(id) {
     });
 
   
-   *  set(null): exclui o nó no firebase
+   * set(null): exclui o nó no firebase como tambem seus filhos
+   *
    */
   ref
     .child(id)
@@ -115,7 +122,8 @@ function curtir(id) {
   countNumber = countNumber + 1;
 
   /**
-   *  set(): acessar o valor que vai ser alterado e setado um novo valor
+   * child(id + '/key'): propriedade que vai ser modificada
+   * set(value): valor que vai ser inserido na propriedade
    */
   ref
     .child(id + '/followers')
@@ -140,8 +148,10 @@ function descurtir(id) {
   let countNumber = +count.innerText;
   if (countNumber > 0) {
     countNumber = countNumber - 1;
+
     /**
-     * @param {Object} update: acessar o objeto qual vai ser acessado e atribui o valor que vai ser alterado
+     * child(id): filho que vai ser modificado
+     * upadte({propriedade: value}): valor que vai ser inserido na propriedade
      */
     ref
       .child(id)
@@ -160,133 +170,77 @@ function descurtir(id) {
  */
 document.addEventListener('DOMContentLoaded', function () {
   /**
-   *  Log dos status da chamadas no firebase
-   */
-  //   firebase.database.enableLogging((message) => {
-  //     console.log('Firebase', message);
-  //   });
-  /**
-   *  once retorna os dados lidos de uma url
-   * snapshot e um objeto retornado pela leitura
+    Log dos status da chamadas no firebase
+  
+    firebase.database.enableLogging((message) => {
+      console.log('Firebase', message);
+    });
+  
+   * tipo: "value" | "child_added" | "child_changed" | "child_moved" | "child_removed"
+   * once(tipo): retorna os dados lidos de uma url
+   * snapshot: retorna um objeto com dados 
+     * metodos:
+        * snapshot.child('id'): acessa um nó filho especifico
+        * snapshot.exists(): verifica se existe algo na resposta do snapshot
+        * hasChild('idNo/key'): retorna um boolean se o filho passado por parametro existe
+        * hasChild('keyNo'): retorna um boolean se o filho passado por parametro existe
+        * hasChildren(): retorna um boolean se tem algum filho dento desse nó passado por parametro
+        * numChildren: retorna os numero de filhos
+        * key: retorna as chaves
+        * forEach((value) => { value.val(), value.key })
    
   ref.once('value').then((snapshot) => {
     
-     *  acessa um nó filho
-    
     console.log('Filhos:', snapshot.child('-MZt0Xb1W0CQHrHmihaK'));
-    
-     *  chega se existe algo no snaphot
-    
-    console.log('Exite resposta:', snapshot.exists());
-    
-     *  hasChild - retorna um boolean caso o filho passado por parametro existe
-     
-    console.log(
-      'Atributo name existe:',
-      snapshot.hasChild('-MZt0Xb1W0CQHrHmihaK/name'),
-    );
-    console.log(
-      'Atributo site existe:',
-      snapshot.hasChild('-MZt0Xb1W0CQHrHmihaK/site'),
-    );
-    
-     *  hasChildren - retorna um boolean se tem algum filho dento desse nó passado por parametro
-     
-    console.log(
-      'Filhos do nó',
-      snapshot.child('-MZt0Xb1W0CQHrHmihaK').hasChildren(),
-    );
-
-     *  numChildren retorna os numero de filhos
+    console.log('Exite resposta:', snapshot.exists()); 
+    console.log('Atributo name existe:', snapshot.hasChild('-MZt0Xb1W0CQHrHmihaK/name'));
+    console.log('Atributo site existe:',snapshot.hasChild('-MZt0Xb1W0CQHrHmihaK/site'));     
+    console.log('Filhos do nó',snapshot.child('-MZt0Xb1W0CQHrHmihaK').hasChildren());
     console.log('Numero de filhos:', snapshot.numChildren());
-
     console.log('Chaves:', snapshot.key);
-     
-
-    snapshot.forEach((value) => {
-      adicionaCardATela(value.val(), value.key);
-    });
-
-  // ORDENCAÇÃO: apenas um metodo de ordenação por vez
+    snapshot.forEach((value) => {adicionaCardATela(value.val(), value.key);});
 
   /**
-   *  orderByChild('filho'): ordena pela propriedade filho passado por parametro
-   */
+   ORDENCAÇÃO: apenas um metodo de ordenação por vez
 
-  //   ref.orderByChild('age').on('child_added', (snapshot) => {
-  //     adicionaCardATela(snapshot.val(), snapshot.key);
-  //   });
-
-  /**
+   *  orderByChild('key|filho'): ordena pela propriedade filho passado por parametro
    *  orderByKey('filho'): ordena pela key
-   */
-  //   ref.orderByKey().on('child_added', (snapshot) => {
-  //     adicionaCardATela(snapshot.val(), snapshot.key);
-  //   });
-
-  /**
    *  orderByValue('filho'): ordena pelo valor de cada propriedade dentro do nó
-   */
-  //   ref
-  //     .child('-MZt7hG-0G5xoj2eT-7U')
-  //     .orderByValue()
-  //     .on('child_added', (snapshot) => {
-  //       console.log(snapshot.val(), snapshot.key);
-  //     });
-
-  /**
-   *  Filtra a busca por proriedade
-   *  orderByChild('propriedade')
    *  startAt(parametro): valor incial a qual deve ser buscado
    *  endtAt(parametro): valor final a qual deve ser buscado
    *  equalTo(parametro): valor igaual ao qual está sendo buscado
-   */
-  //   ref
-  //     .orderByChild('age')
-  //     .startAt(30)
-  //     .endAt(36)
-  //     .on('child_added', (snapshot) => {
-  //       adicionaCardATela(snapshot.val(), snapshot.key);
-  //     });
 
-  /**
-   *  Limites
+     ref.orderByChild('age').on('child_added', (snapshot) => {
+       adicionaCardATela(snapshot.val(), snapshot.key);
+     });
+
+     ref.orderByKey().on('child_added', (snapshot) => {
+       adicionaCardATela(snapshot.val(), snapshot.key);
+     });
+      
+     ref.child('-MZt7hG-0G5xoj2eT-7U').orderByValue().on('child_added', (snapshot) => {console.log(snapshot.val(), snapshot.key)});
+
+     ref.orderByChild('age').startAt(30).endAt(36).on('child_added', (snapshot) => {adicionaCardATela(snapshot.val(), snapshot.key)});
+
+  
+   Limites
    *  limitToFirst(Number): Retorna apenas a quantidade de dados desde o primeiro ate o tamanho do limite
    *  limitToLast(Number): Retorna apenas a quantidade de dados do tamanho até o ultimo do limite
-   *  obs: usar para criar paginacão
-   */
+   *  #DICA: usar para criar paginacão
 
-  //   ref
-  //     .orderByChild('age')
-  //     .startAt(0)
-  //     .limitToFirst(2)
-  //     .on('child_added', (snapshot) => {
-  //       adicionaCardATela(snapshot.val(), snapshot.key);
-  //     });
+     ref.orderByChild('age').startAt(0).limitToFirst(2).on('child_added', (snapshot) => {adicionaCardATela(snapshot.val(), snapshot.key)});
+  
 
-  /**
+  Observables
    *  child_added: retorna todos os nós um por vez
-   
-  ref.on('child_added', (snapshot) => {
-    adicionaCardATela(snapshot.val(), snapshot.key);
-  });
-  
+   *  child_changed: é diparado se algum dado foi modifiado na referencia, retorna o id modificado e seu uid antecessor
    *  child_changed: é diparado se algum dado foi modifiado na referencia, retorna o id modificado e seu uid antecessor
    
-  ref.on('child_changed', (snapshot, uid) => {
-    adicionaCardATela(snapshot.val(), uid);
-  });
+      ref.on('child_added', (snapshot) => {adicionaCardATela(snapshot.val(), snapshot.key)});
+      ref.on('child_changed', (snapshot, uid) => {adicionaCardATela(snapshot.val(), uid)});
+      ref.on('child_removed', (snapshot, uid) => {adicionaCardATela(snapshot.val(), uid)});
 
-  
-   *  child_changed: é diparado se algum dado foi modifiado na referencia, retorna o id modificado e seu uid antecessor
-   
-  ref.on('child_removed', (snapshot, uid) => {
-    adicionaCardATela(snapshot.val(), uid);
-  });
-  
-   */
 
-  /**
    *  usando fetch no lugar da lib do firebase
    */
   fetch('https://pj-teste.firebaseio.com/card.json')
