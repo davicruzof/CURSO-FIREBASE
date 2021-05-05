@@ -54,17 +54,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (!usuario.emailVerified) {
         // Envia um email para verificar de cadastro
-        usuario.sendEmailVerification().then(() => {
-          alert('Email de verificacão enviado!');
-        });
+        // usuario.sendEmailVerification().then(() => {
+        //   alert('Email de verificacão enviado!');
+        // });
       }
       // emaiul de mudança de senha
-      firebase
-        .auth()
-        .sendPasswordResetEmail(usuario.email)
-        .then(() => {
-          console.log('Email de recuperação de senha enviado!');
-        });
+      // firebase
+      //   .auth()
+      //   .sendPasswordResetEmail(usuario.email)
+      //   .then(() => {
+      //     console.log('Email de recuperação de senha enviado!');
+      //   });
     } else {
       console.log('Não há usuario logado');
     }
