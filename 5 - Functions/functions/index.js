@@ -1,12 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp({
-    apiKey: "AIzaSyBIhYl2WZKchbkZq95yx02s-SnW_hIY4tI",
-    authDomain: "curso-firebase-webapps.firebaseapp.com",
-    databaseURL: "https://curso-firebase-webapps.firebaseio.com",
-    projectId: "curso-firebase-webapps",
-    storageBucket: "curso-firebase-webapps.appspot.com",
-    messagingSenderId: "103261283431"
+    
 });
 
 exports.addCard = functions.https.onRequest((request, response) => {
